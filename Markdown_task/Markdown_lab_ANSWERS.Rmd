@@ -1,0 +1,96 @@
+---
+title: "Coding Best Practices Lab -- RMarkdown"
+output: html_document
+date: "2023-08-22"
+---
+
+```{r setup, include=FALSE,message = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## WELCOME
+
+WELCOME TO THE CODING BEST PRACTICES R MARKDOWN LAB. This markdown document will take you through the basics of using markdown to create reproducible and editable reports. The specific goal of the task is to create a report that is easily editable such that someone else using it could change variable names, etc. and see different statistics in the same format.
+
+
+## Markdown
+Rmarkdown uses the document rendering language [Markdown](https://www.markdownguide.org/) to power its text portions. You can do all sorts of fancy things, but some basics include:
+
+ - Bulleted lists (like so)
+ - **Bold** text
+ - *Italic* text
+ 
+#### Subheadings and tables of content
+
+And much, much more!
+
+## Coding
+But we're very interested in Rmarkdown because it allows us to embed code, and importantly the code's output, in our document. In order to add a code chunk, you use three "`" and then tell markdown what language to interpret (in RMarkdown it's almost always... R). Here's an example, where we load a package and the data we'll be using, and summarize one of the variables (days worked in the past week):
+
+```{r, echo=FALSE,message = FALSE}
+library(haven)
+library(dplyr)
+setwd('') #### SET YOUR WORKING DIRECTORY HERE
+base <- read_stata('Data/baseline.dta')
+summary(base$s2_4_work_days_num)
+```
+
+## Task
+We'll be using a baseline dataset for a study of elderly individuals in Tamil Nadu. The PIs want to prepare for periodically being asked by their government partners for updates and summary statistics from the data. Each government official will have indicators that they personally think are the most important, but the PIs have noticed that the presentation tends to go well when they have a few pieces of information: 
+
+ - Basic indicators of prevalence of the indicator in the population
+ - Summary stats of the indicator by gender
+ - Correlation of the indicator with a couple other select indicators.
+ 
+Therefore the PIs have tasked you with creating a report template that they can use to quickly adapt these reports to the specific variables that individual partners are interested in. How exactly you want to do this is up to you, but a basic structure would be three code chunks and three documentation pieces, one each for the three bullets above. The code below sets up that very basic structure and provides some useful hints/tips, but feel free to change it based on your vision!
+
+### Basic prevalence
+
+```{r, echo=FALSE,message = FALSE}
+### First we want to set the variable name that we're interested in, so in the future
+# we don't have to change 100 references, just one!
+base$var_interest <- base$s3_11_taken_vaccine
+base$corr_var <- base$ucla_loneliness_index ### Setting the variable we want to correlate with
+
+#### Section for any cleaning that needs to happen:
+base$var_interest <- ifelse(is.na(base$var_interest),0,base$var_interest)
+base$var_interest <- ifelse(base$var_interest ==2,0,base$var_interest)
+### We want to show both the distribution as well as the mean and sd
+prev <- summary(base$var_interest) ## distribution
+mn_int <- mean(base$var_interest, na.rm = TRUE)
+sd_int <- sd(base$var_interest, na.rm = TRUE)
+#### Then we put the above into a simple paragraph:
+```
+In the sample, the proportion of individuals that are vaccinated is relatively low, at `r round(mn_int*100,2)` percent. 
+
+
+### Sum stats by group
+```{r, echo=FALSE,message = FALSE}
+library(kableExtra)
+gend <- base %>%
+  group_by(female) %>%
+  dplyr::summarise(mean_int = mean(var_interest,na.rm = TRUE))
+### Kable styling:
+gend %>%
+  kbl() %>%
+  kable_styling()
+fem_mean <- gend$mean_int[2]
+```
+And we see that while vaccination rates are low for both men and women, there is a slight difference in mean rates between the two, with `r round(fem_mean*100,2)` percent receiving a vaccine.
+
+### Correlation
+```{r, echo=FALSE,message = FALSE}
+library(ggplot2)
+ggplot(data = base) + 
+  geom_point(mapping = aes(x = corr_var, y = var_interest))
+```
+
+
+Sometimes, despite the best of intentions, the report may take more editing than just substituting variables -- I chose a binary variable, and so a scatter plot is hard to read! Reminder to think about both *usability* and *reproducibility.*
+
+So in this case we would want to have another option set up that would allow us just to report a correlation or correlation table:
+```{r, echo=FALSE,message=FALSE}
+
+c <- cor(base$var_interest,base$corr_var,method = 'pearson')
+```
+With a correlation coefficient of `r round(c,2)`, we can see that the vaccination rate is *not* very correlated with the individual's loneliness score.
