@@ -7,33 +7,37 @@ Description: Interactive do-file for RST participants to work on outputting repr
 /// SET YOUR DIRECTORY IN A REPRODUCIBLE WAY WOO
 di "`c(username)'"
 if c(username) == "jackcavanagh" { 
-	cd "/Users/jackcavanagh/Documents/CBP_Lab/Latex_task"
+	cd "/Users/jackcavanagh/Documents/CBP_Lab"
 }
 
 
 ************************ DO NOT WORRY ABOUT THIS *******************************
 cap file close f
-file open f using "Final_Product.tex", write replace
+file open f using "Latex_task/Final_Product.tex", write replace
 
 file write f "\documentclass[12pt]{article}" _n "\usepackage[utf8]{inputenc}" _n "\usepackage{geometry,etoolbox,breakcites,cite,hyperref,dsfont,amssymb,rotating,booktabs,array,ragged2e,breqn,morefloats,chngcntr,tabularx,lipsum,titling,lscape,multirow,longtable,pdflscape}" _n "\begin{document}" _n
 
-sysuse auto, clear
-
+use "Data/baseline.dta", clear
+ren s2_4_work_days_num work_days
+ren s3_9_1_sleep_hrs_last_mm hrs_slp
+ren s3_2_issue_name_2 fever
+ren s7_9_parti_light_sports_tm light_sports
+ren ucla_loneliness_index ucla
 ************************** START HERE ******************************************
 /* WELCOME TO THE LATEX CODING BEST PRACTICES LAB. Your goal is to edit this do-file to allow it to output reproducible statistics in well-formatted latex. Because the previous RA on the project, Sloppy Steve, was in a rush to get off the project, he left things a bit of a mess: there's some code to output basic counts, summary statistics, and a regression table to a latex file, but most of the statistics are hard-coded in! Now the data has changed a bit, and you want to take this opportunity to make the whole thing more reproducible. Follow the prompts below to create a script that would output exactly what is found in the "Final_Product.tex" file in the folder. */
 
 
 ************** PART 1: LET'S COUNT!
-/* The first part is some basic tabulation. The PIs want to know how many cars fit into the following price bins: X<5,000; 5,000<= X < 10,000; 10,000 < X. Sloppy Steve wrote the following code to count the groups: */
+/* The first part is some basic tabulation. The PIs want to know how many elders fit into the following age bins: X<60; 60<= X < 80; 80 < X. Sloppy Steve wrote the following code to count the groups: */
 
-count if price <5000
-local price_low = `r(N)'
+count if age <60
+local age_low = `r(N)'
 
-count if price >= 5000 & price <10000
-local price_med = `r(N)'
+count if age >= 60 & age <80
+local age_med = `r(N)'
 
-count if price >=10000 
-local price_high = `r(N)'
+count if age >=80 
+local age_high = `r(N)'
 
 
 *** Question 1a: add in code to the above section that lets us store the counts in different locals named for the bin. 
@@ -48,11 +52,11 @@ local price_high = `r(N)'
 
 *** Question 1b: The counts were exported to the latex file here. Replace the hard-coded numbers with your locals to make it more reproducible!
 
-file write f _n "\section{Counts}" _n "Count of models in the following price bins:\\ " _n 
+file write f _n "\section{Counts}" _n "Count of elders in the following age bins:\\ " _n 
 
-file write f "Less than 5 thousand dollars: `price_low' \\" _n
-file write f "Between 5 and 10 thousand dollars: `price_med' \\" _n
-file write f "Over 10 thousand dollars: `price_high' \\" _n
+file write f "Less than 60: `age_low' \\" _n
+file write f "Between 60 and 80: `age_med' \\" _n
+file write f "Over 80: `age_high' \\" _n
 
 
 // HINT: Stata allows you to embed locals within strings, but you have to wrap their names a certain way to let stata know it should check for locals!
@@ -60,9 +64,9 @@ file write f "Over 10 thousand dollars: `price_high' \\" _n
 
 
 ************** PART 2: SUMM STATS
-/* The next part moves on to summary statistics. The PIs want to know the mean, standard deviation, and median of mileage, and they are persnickity about formatting, and so want them in a bulleted list. The code below is hardcoded, and only exports the first two! */
+/* The next part moves on to summary statistics. The PIs want to know the mean, standard deviation, and median of number of days worked over the last week, and they are persnickity about formatting, and so want them in a bulleted list. The code below is hardcoded, and only exports the first two! */
 
-summ mpg, detail
+summ s2_4_work_days_num, detail
 local mean = `r(mean)'
 local sd = `r(sd)'
 
@@ -73,7 +77,7 @@ local mean = string(`mean', "%3.2f")
 local sd = string(`sd', "%3.2f")
 local median = string(`r(p50)', "%3.2f")
 
-file write f _n "\section{Summ stats}" _n "Summary stats for mileage" _n 
+file write f _n "\section{Summ stats}" _n "Summary stats for days worked" _n 
 
 
 **** How do we make mean and SD reproducible, and add in median?
@@ -82,16 +86,16 @@ file write f "\begin{itemize}" _n "\item Mean: `mean'" _n "\item SD: `sd'" _n "\
 file write f _n "\end{itemize}" _n
 
 ************** PART 3: REGRESSION OUTPUT
-/* Finally, the PIs want to see the results of a regression of both price and displacement on mpg, headroom, weight, and length, but all individually (no one knows why). They want to see the results in a table similar to those you'd find in academic papers -- outcomes as the column index and independent variables as the horizontal index, with estimates in one row and standard errors in the next. The code below runs the the regressions and creates the table, but only outputs a hardcoded regression the PIs don't care about anymore! */
+/* Finally, the PIs want to see the results of a regression of both days worked and hours slept at night on age, having a fever, any light sport, per capita consumption, and the ucla loneliness index, but all individually (no one knows why). They want to see the results in a table similar to those you'd find in academic papers -- outcomes as the column index and independent variables as the horizontal index, with estimates in one row and standard errors in the next. The code below runs the the regressions and creates the table, but only outputs a hardcoded regression the PIs don't care about anymore! */
 
-file write f _n "\section{Regression output}"_n "\begin{tabular}{lcc}" _n "\hline" _n " \hline" _n " Independent var  &  Price & Displacement \\"_n "\hline" _n 
+file write f _n "\section{Regression output}"_n "\begin{tabular}{lcc}" _n "\hline" _n " \hline" _n " Independent var  &  Days worked & Hours slept \\"_n "\hline" _n 
 
-//reg price turn
-//file write f "turn & 207.58 &\\" _n "& (75.13) &\\" _n
+//reg s2_4_work_days gdi_score
+//file write f "work_days & 207.58 &\\" _n "& (75.13) &\\" _n
 
 
-global outcomes price displacement
-global independents mpg headroom weight length
+global outcomes work_days hrs_slp
+global independents age fever light_sports percap_hh_c ucla
 
 foreach yvar in $outcomes{
 	foreach xvar in $independents{
@@ -123,7 +127,7 @@ foreach yvar in $outcomes{
 
 	foreach xvar in $independents{
 		// HINT: What if you used a similar for loop to make the process of writing each line of the table easier?
-	file write f "`xvar' & `price_`xvar'_e' & `displacement_`xvar'_e'\\"_n "& (`price_`xvar'_se') & (`displacement_`xvar'_se')\\"_n
+	file write f "`xvar' & `work_days_`xvar'_e' & `hrs_slp_`xvar'_e'\\"_n "& (`work_days_`xvar'_se') & (`hrs_slp_`xvar'_se')\\"_n
 	
 	}
 

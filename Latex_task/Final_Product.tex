@@ -4,33 +4,35 @@
 \begin{document}
 
 \section{Counts}
-Count of models in the following price bins:\\ 
-Less than 5 thousand dollars: 37 \\
-Between 5 and 10 thousand dollars: 27 \\
-Over 10 thousand dollars: 10 \\
+Count of elders in the following age bins:\\ 
+Less than 60: 153 \\
+Between 60 and 80: 939 \\
+Over 80: 205 \\
 
 \section{Summ stats}
-Summary stats for mileage
+Summary stats for days worked
 \begin{itemize}
-\item Mean: 21.30
-\item SD: 5.79
-\item Median: 20.00
+\item Mean: 4.46
+\item SD: 1.82
+\item Median: 5.00
 \end{itemize}
 
 \section{Regression output}
 \begin{tabular}{lcc}
 \hline
  \hline
- Independent var  &  Price & Displacement \\
+ Independent var  &  Days worked & Hours slept \\
 \hline
-mpg & -238.89*** & -11.20***\\
-& (53.08) & (1.33)\\
-headroom & 399.21 & 51.51***\\
-& (408.18) & (11.26)\\
-weight & 2.04*** & 0.11***\\
-& (0.38) & (0.01)\\
-length & 57.20*** & 3.44***\\
-& (14.08) & (0.27)\\
+age & 0.00 & -0.01\\
+& (0.02) & (0.02)\\
+fever & -1.06** & 0.20\\
+& (0.50) & (0.33)\\
+light_sports & 0.00 & 0.00\\
+& (0.00) & (0.00)\\
+percap_hh_c & 0.00 & -0.00\\
+& (0.00) & (0.00)\\
+ucla & -0.18 & -0.12\\
+& (0.15) & (0.14)\\
 \hline
 \hline
 \end{tabular}
