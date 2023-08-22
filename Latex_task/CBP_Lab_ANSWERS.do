@@ -66,7 +66,7 @@ file write f "Over 80: `age_high' \\" _n
 ************** PART 2: SUMM STATS
 /* The next part moves on to summary statistics. The PIs want to know the mean, standard deviation, and median of number of days worked over the last week, and they are persnickity about formatting, and so want them in a bulleted list. The code below is hardcoded, and only exports the first two! */
 
-summ s2_4_work_days_num, detail
+summ work_days, detail
 local mean = `r(mean)'
 local sd = `r(sd)'
 
