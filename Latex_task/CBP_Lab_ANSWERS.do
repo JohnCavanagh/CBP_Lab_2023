@@ -7,7 +7,7 @@ Description: Interactive do-file for RST participants to work on outputting repr
 /// SET YOUR DIRECTORY IN A REPRODUCIBLE WAY WOO
 di "`c(username)'"
 if c(username) == "jackcavanagh" { 
-	cd "/Users/jackcavanagh/Documents/CBP_Lab"
+	cd "" // PUT YOUR DIRECTORY HERE
 }
 
 
