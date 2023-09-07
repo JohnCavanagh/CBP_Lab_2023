@@ -1,5 +1,5 @@
 /******************************************************************************
-Title: 	Coding Best Practices Lab, Latex advisture				
+Title: 	Coding Best Practices Lab, Graph advisture				
 Last Modified by: Jack Cavanagh (jcavanagh@povertyactionlab.org)	
 Date Created: 08/20/2023	
 Description: Interactive do-file for RST participants to work on outputting reproducible graphs from Stata		 							
@@ -7,7 +7,7 @@ Description: Interactive do-file for RST participants to work on outputting repr
 /// SET YOUR DIRECTORY IN A REPRODUCIBLE WAY WOO
 di "`c(username)'"
 if c(username) == "jackcavanagh" { 
-	cd "/Users/jackcavanagh/Documents/CBP_Lab"
+	cd "" // PUT YOUR DIRECTORY HERE WHEN YOU COPY AND PASTE
 }
 
 
